@@ -45,7 +45,7 @@ def TestTurnToEnemyWithin5tTcks():
 
 def TurnRight10():
 
-def Or(test1, test2, action): //returns bool
+def Or(test1, test2, action): #returns bool
 
 def And(test1, test2, antion):
 
