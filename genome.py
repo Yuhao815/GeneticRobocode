@@ -39,12 +39,10 @@ def TestGunWithin5Ticks():
 
 def TestTurnToEnemyWithin10Ticks():
 
-def TestTurnToEnemyWithin5tTcks():
+def TestTurnToEnemyWithin5TIcks():
 
 
-
-def TurnRight10():
-
+# Logic
 def Or(test1, test2, action): #returns bool
 
 def And(test1, test2, antion):
