@@ -33,7 +33,7 @@ pset.addTerminal(TestEnemyEnergyBelow10, bool)
 pset.addTerminal(TestEnergyBelow10, bool)
 pset.addTerminal(TestEnergyGreaterThanEnemys, bool)
 pset.addTerminal(TestEnergyLessThanEnemys, bool)
-pset.addTerminal(TestEnemyWithin10Ticks, bool
+pset.addTerminal(TestEnemyWithin10Ticks, bool)
 pset.addTerminal(TestEnemyWithin20Ticks, bool)
 pset.addTerminal(TestEnemyWithin50Ticks, bool)
 pset.addTerminal(TestGunIsHot, bool)
