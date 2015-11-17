@@ -2,6 +2,8 @@ import genome
 
 #import numpy
 
+import subprocess
+
 from deap import algorithms
 from deap import base
 from deap import creator
@@ -58,11 +60,17 @@ toolbox.register("expr", gp.genFull, pset=pset, min_=10, max_=15) #the min and m
 toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
+def writeGenome(filename, individual):
+	outputFile = open(filename, 'w')
+	outputFile.write(str(individual))
+	outputFile.close()
+
 def evalRobot(individual):
     # Transform the tree expression in a callable function
     #func = toolbox.compile(expr=individual)
-    print("eval!")
-    print(individual)
+    writeGenome("genome.txt", individual)
+    robocodeCommand = "java -Xmx512M -DNOSECURITY=false -Dsun.io.useCanonCaches=false -cp C:/robocode/libs/robocode.jar robocode.Robocode -battle C:/robocode/battles/sample.battle -nodisplay -results results.txt"
+    subprocess.call(robocodeCommand)
     result = 1.0 #call robocode
     return result,
 
