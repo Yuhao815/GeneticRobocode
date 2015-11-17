@@ -43,6 +43,7 @@ pset.addPrimitive(genome.TestGunWithin5Ticks, [], bool)
 pset.addPrimitive(genome.TestTurnToEnemyWithin10Ticks, [], bool)
 pset.addPrimitive(genome.TestTurnToEnemyWithin5TIcks, [], bool)
 
+#"plugs" the holes at the end. Is this what we want?
 pset.addTerminal(True, bool)
 pset.addTerminal(False, bool)
 pset.addTerminal(None, NoneType)
@@ -53,7 +54,7 @@ creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
 creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMin, pset=pset)
 
 toolbox = base.Toolbox()
-toolbox.register("expr", gp.genFull, pset=pset, min_=1, max_=3)
+toolbox.register("expr", gp.genFull, pset=pset, min_=10, max_=15) #the min and max depth for leaves?
 toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
@@ -61,6 +62,7 @@ def evalRobot(individual):
     # Transform the tree expression in a callable function
     #func = toolbox.compile(expr=individual)
     print("eval!")
+    print(individual)
     result = 1.0 #call robocode
     return result,
 
@@ -68,7 +70,7 @@ def evalRobot(individual):
 toolbox.register("evaluate", evalRobot)
 toolbox.register("select", tools.selTournament, tournsize=3)
 toolbox.register("mate", gp.cxOnePoint)
-toolbox.register("expr_mut", gp.genFull, min_=0, max_=2)
+toolbox.register("expr_mut", gp.genFull, min_=5, max_=10) #the min and max depth of new mutations?
 toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=pset)
 
 #random.seed(10)
