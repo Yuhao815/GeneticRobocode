@@ -65,12 +65,26 @@ def writeGenome(filename, individual):
 	outputFile.write(str(individual))
 	outputFile.close()
 
+def readScores(filename):
+	results = {}
+	with open(filename, 'r') as resultsFile:
+		scores = resultsFile.readlines()[2:]
+		for scoreLine in scores:
+			place, robotName, score = scoreLine.split(' ')[:3]
+			results[robotName] = score
+
+	return results
+
+
 def evalRobot(individual):
     # Transform the tree expression in a callable function
     #func = toolbox.compile(expr=individual)
     writeGenome("genome.txt", individual)
     robocodeCommand = "java -Xmx512M -DNOSECURITY=false -Dsun.io.useCanonCaches=false -cp C:/robocode/libs/robocode.jar robocode.Robocode -battle C:/robocode/battles/sample.battle -nodisplay -results results.txt"
     subprocess.call(robocodeCommand)
+    scores = readScores("results.txt")
+    result = scores["sample.Tracker"]
+    print("______" + result)
     result = 1.0 #call robocode
     return result,
 
