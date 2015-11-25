@@ -24,7 +24,17 @@ import java.awt.*;
 public class Genetic extends AdvancedRobot {
 	boolean movingForward;
 	private enum DriveState { INITIAL, LEFT_TURN, RIGHT_TURN }
-	DriveState state;
+	DriveState drivingState;
+	Runnable mainCode;
+	Runnable onScannedRobotCode;
+	Runnable onHitRobotCode;
+	Runnable onBulletHitCode;
+	Runnable onBulletMissedCode;
+
+	public Genetic() {
+		parseGeneticCode();
+	}
+
 	/**
 	 * run: Crazy's main run function
 	 */
@@ -41,15 +51,24 @@ public class Genetic extends AdvancedRobot {
 		// Loop forever
 		while (true) {
 			handleDriving();
-			//do genetic stuff
+			mainCode.run();
 		}
 	}
+
+	private void parseGeneticCode() {
+		//test genetic code
+		mainCode = getOr(testGunIsHot, testGunIsHot, getFire1());
+		onScannedRobotCode = getFire1();
+		onHitRobotCode = getFire1();
+		onBulletHitCode = getFire1();
+		onBulletMissedCode = getFire1();
+	}	
 
 	private void handleDriving() {
 		//If the turning is finished, advance the state
 		Condition turned = new TurnCompleteCondition(this);
 		if(turned.test()) {
-			switch(state) {
+			switch(drivingState) {
 				case INITIAL:
 					setLeftTurnState();
 					break;
@@ -69,19 +88,19 @@ public class Genetic extends AdvancedRobot {
 		movingForward = true;
 		// Tell the game we will want to turn right 90
 		setTurnRight(90);
-		state = INITIAL;
+		drivingState = INITIAL;
 	}
 
 	private void setLeftTurnState() {
 		// Now we'll turn the other way...
 		setTurnLeft(180);
-		state = LEFT_TURN;
+		drivingState = LEFT_TURN;
 	}
 
 	private void setRightTurnState() {
 		// ... then the other way ...
 		setTurnRight(180);
-		state = RIGHT_TURN;
+		drivingState = RIGHT_TURN;
 	}
 
 	/**
@@ -109,7 +128,7 @@ public class Genetic extends AdvancedRobot {
 	 * onScannedRobot: Use the genetic code
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
-		fire(1);
+		onScannedRobotCode.run();
 	}
 
 	/**
@@ -120,20 +139,61 @@ public class Genetic extends AdvancedRobot {
 		if (e.isMyFault()) {
 			reverseDirection();
 		}
+		onHitRobotCode.run();
 	}
 
 	/**
 	* onBulletHit: Use the genetic code
 	*/
 	public void onBulletHit(BulletHitEvent e) {
-
+		onBulletHitCode.run();
 	}
 
 	/**
 	* onBulletMissed: Use the genetic code
 	*/
 	public void onBulletMissed(BulletMissedEvent e) {
+		onBulletMissedCode.run();
+	}
 
+	/**
+	* The genome implementation functions
+	*/
+	private boolean testGunIsHot() {
+		return getGunHeat() > 0;
+	}
+
+	private Runnable getOr(Predicate<boolean> test1, Predicate<boolean> test2, Runnable action) {
+		return new Runnable() {
+		    public void run() {
+		    	if(test1.test() || test2.test())
+					action.run();
+		    }
+		};
+	}
+
+	private Runnable getFire1() {
+		return new Runnable() {
+		    public void run() {
+		    	fire(1);
+		    }
+		};
+	}
+
+	private Runnable getFire2() {
+		return new Runnable() {
+		    public void run() {
+		    	fire(2);
+		    }
+		};
+	}
+
+	private Runnable getFire3() {
+		return new Runnable() {
+		    public void run() {
+		    	fire(3);
+		    }
+		};
 	}
 	
 }
