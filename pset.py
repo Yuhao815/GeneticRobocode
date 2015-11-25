@@ -11,8 +11,12 @@ from deap import tools
 from deap import gp
 
 NoneType = type(None)
+FunctionType = type(genome.Root)
 
-pset = gp.PrimitiveSetTyped("main", [], NoneType)
+pset = gp.PrimitiveSetTyped("main", [], FunctionType)
+
+#add initial node
+pset.addPrimitive(genome.Root, [NoneType, NoneType, NoneType, NoneType], FunctionType)
 
 #logical
 pset.addPrimitive(genome.Or, [bool, bool, NoneType], NoneType)
@@ -52,11 +56,11 @@ pset.addTerminal(None, NoneType)
 
 #begin genetic programming
 #initialize population
-creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
-creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMin, pset=pset)
+creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMax, pset=pset)
 
 toolbox = base.Toolbox()
-toolbox.register("expr", gp.genFull, pset=pset, min_=10, max_=15) #the min and max depth for leaves?
+toolbox.register("expr", gp.genGrow, pset=pset, min_=10, max_=15) #the min and max depth for leaves? #genGrow or genFull?
 toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
@@ -79,12 +83,14 @@ def readScores(filename):
 def evalRobot(individual):
     # Transform the tree expression in a callable function
     #func = toolbox.compile(expr=individual)
-    writeGenome("genome.txt", individual)
-    robocodeCommand = "java -Xmx512M -DNOSECURITY=false -Dsun.io.useCanonCaches=false -cp C:/robocode/libs/robocode.jar robocode.Robocode -battle C:/robocode/battles/sample.battle -nodisplay -results results.txt"
-    subprocess.call(robocodeCommand)
-    scores = readScores("results.txt")
-    result = scores["genetic.Genetic"]
-    print("______" + result)
+    #writeGenome("genome.txt", individual)
+    print(individual)
+    print("_________________________")
+    #robocodeCommand = "java -Xmx512M -DNOSECURITY=false -Dsun.io.useCanonCaches=false -cp C:/robocode/libs/robocode.jar robocode.Robocode -battle C:/robocode/battles/sample.battle -nodisplay -results results.txt"
+    #subprocess.call(robocodeCommand)
+    #scores = readScores("results.txt")
+    #result = scores["genetic.Genetic"]
+    #print("______" + result)
     result = 1.0 #call robocode
     return result,
 
@@ -104,4 +110,4 @@ stats = tools.Statistics(lambda ind: ind.fitness.values)
 #stats.register("min", numpy.min)
 #stats.register("max", numpy.max)
 
-algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 40, stats, halloffame=hof)
+algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 40, stats, halloffame=hof) #popsize of 40
