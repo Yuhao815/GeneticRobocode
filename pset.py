@@ -83,7 +83,7 @@ def evalRobot(individual):
     robocodeCommand = "java -Xmx512M -DNOSECURITY=false -Dsun.io.useCanonCaches=false -cp C:/robocode/libs/robocode.jar robocode.Robocode -battle C:/robocode/battles/sample.battle -nodisplay -results results.txt"
     subprocess.call(robocodeCommand)
     scores = readScores("results.txt")
-    result = scores["sample.Tracker"]
+    result = scores["genetic.Genetic"]
     print("______" + result)
     result = 1.0 #call robocode
     return result,
