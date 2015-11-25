@@ -16,7 +16,7 @@ FunctionType = type(genome.Root)
 pset = gp.PrimitiveSetTyped("main", [], FunctionType)
 
 #add initial node
-pset.addPrimitive(genome.Root, [NoneType, NoneType, NoneType, NoneType], FunctionType)
+pset.addPrimitive(genome.Root, [NoneType, NoneType, NoneType, NoneType, NoneType], FunctionType)
 
 #logical
 pset.addPrimitive(genome.Or, [bool, bool, NoneType], NoneType)
