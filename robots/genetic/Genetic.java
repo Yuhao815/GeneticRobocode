@@ -30,6 +30,9 @@ public class Genetic extends AdvancedRobot {
 	Runnable onHitRobotCode;
 	Runnable onBulletHitCode;
 	Runnable onBulletMissedCode;
+	double enemyEnergy;
+	double enemyDistance;
+	double enemyBearing;
 
 	public Genetic() {
 		parseGeneticCode();
@@ -62,7 +65,7 @@ public class Genetic extends AdvancedRobot {
 		onHitRobotCode = getFire1();
 		onBulletHitCode = getFire1();
 		onBulletMissedCode = getFire1();
-	}	
+	}
 
 	private void handleDriving() {
 		//If the turning is finished, advance the state
@@ -128,6 +131,9 @@ public class Genetic extends AdvancedRobot {
 	 * onScannedRobot: Use the genetic code
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
+		enemyEnergy = e.getEnergy();
+		enemyDistance = e.getDistance();
+		enemyBearing = e.getBearing();
 		onScannedRobotCode.run();
 	}
 
@@ -163,6 +169,66 @@ public class Genetic extends AdvancedRobot {
 		return getGunHeat() > 0;
 	}
 
+
+	// Not sure what this means
+	private boolean TestEnemyEnergy() {
+		//TODO
+		return true;
+	}
+
+
+	private boolean TestEnemyEnergy0() {
+		return enemyEnergy == 0;
+	}	
+
+	private boolean TestEnemyEnergyBelow10() {
+		return enemyEnergy < 10;
+	}
+
+	private boolean TestEnergyBelow10() {
+		return getEnergy() < 10;
+	}
+
+	private boolean TestEnergyGreaterThanEnemys() {
+		return getEnergy() > enemyEnergy;
+	}
+
+	private boolean TestEnergyLessThanEnemys() {
+		return getEnergy() < enemyEnergy;
+	}
+
+	private boolean TestEnemyWithin10Ticks() {
+		return enemyDistance / getVelocity() < 10;
+	}	
+	private boolean TestEnemyWithin20Ticks() {
+		return enemyDistance / getVelocity() < 20;
+	}	
+
+	private boolean TestEnemyWithin50Ticks() {
+		return enemyDistance / getVelocity() < 50;
+	}
+
+
+	// Not sure what this means	
+	private boolean TestGunWithin5Ticks() {
+		//TODO
+		return true;
+	}
+
+
+	// We can set our own turning rate right?
+	private boolean TestTurnToEnemyWithin10Ticks() {
+		// I assume we use the max turning speed for gun
+		return enemyBearing/20 < 10;
+	}	
+
+
+	private boolean TestTurnToEnemyWithin5TIcks() {
+		// I assume we use the max turning speed for gun
+		return enemyBearing/20 < 5;
+	}	
+
+
 	private Runnable getOr(Predicate<boolean> test1, Predicate<boolean> test2, Runnable action) {
 		return new Runnable() {
 		    public void run() {
@@ -195,5 +261,6 @@ public class Genetic extends AdvancedRobot {
 		    }
 		};
 	}
+
 	
 }
