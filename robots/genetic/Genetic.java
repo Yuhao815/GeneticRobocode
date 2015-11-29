@@ -13,9 +13,10 @@ package genetic;
 
 
 import robocode.*;
+import java.util.function.Predicate;
+import java.util.concurrent.Callable;
 
 import java.awt.*;
-
 
 /**
  * Genetic - A robot that drives randomly and
@@ -60,7 +61,7 @@ public class Genetic extends AdvancedRobot {
 
 	private void parseGeneticCode() {
 		//test genetic code
-		mainCode = getOr(testGunIsHot, testGunIsHot, getFire1());
+		mainCode = getOr(testGunIsHot(), testGunIsHot(), getFire1());
 		onScannedRobotCode = getFire1();
 		onHitRobotCode = getFire1();
 		onBulletHitCode = getFire1();
@@ -91,19 +92,19 @@ public class Genetic extends AdvancedRobot {
 		movingForward = true;
 		// Tell the game we will want to turn right 90
 		setTurnRight(90);
-		drivingState = INITIAL;
+		drivingState = DriveState.INITIAL;
 	}
 
 	private void setLeftTurnState() {
 		// Now we'll turn the other way...
 		setTurnLeft(180);
-		drivingState = LEFT_TURN;
+		drivingState = DriveState.LEFT_TURN;
 	}
 
 	private void setRightTurnState() {
 		// ... then the other way ...
 		setTurnRight(180);
-		drivingState = RIGHT_TURN;
+		drivingState = DriveState.RIGHT_TURN;
 	}
 
 	/**
@@ -165,8 +166,17 @@ public class Genetic extends AdvancedRobot {
 	/**
 	* The genome implementation functions
 	*/
-	private boolean testGunIsHot() {
-		return getGunHeat() > 0;
+	private Callable<Boolean> testGunIsHot() {
+		return new Callable<Boolean>() {
+		    public Boolean call() {
+		    	if ( getGunHeat() > 0 ) {
+					return Boolean.TRUE;
+				}
+				else {
+					return Boolean.FALSE;
+				}
+		    }
+		};
 	}
 
 
@@ -229,10 +239,12 @@ public class Genetic extends AdvancedRobot {
 	}	
 
 
-	private Runnable getOr(Predicate<boolean> test1, Predicate<boolean> test2, Runnable action) {
+	private Runnable getOr(Callable<Boolean> test1, Callable<Boolean> test2, Runnable action) {
 		return new Runnable() {
 		    public void run() {
-		    	if(test1.test() || test2.test())
+			//	boolean test1bool = test1.test(Boolean.TRUE);
+			//	boolean test2bool = test2.test(Boolean.TRUE);
+				if(test1.call() || test2.call())
 					action.run();
 		    }
 		};
