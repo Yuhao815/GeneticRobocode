@@ -34,10 +34,9 @@ public class Genetic extends AdvancedRobot {
 	double enemyEnergy;
 	double enemyDistance;
 	double enemyBearing;
-
-	public Genetic() {
-		parseGeneticCode();
-	}
+	//Bullet velocity = 20 - (3 * firepower)
+	//0 to fix indexing
+	Array<int> BulletVelocityForPower = {0, 17, 14, 11};
 
 	/**
 	 * run: Crazy's main run function
@@ -59,6 +58,10 @@ public class Genetic extends AdvancedRobot {
 		}
 	}
 
+	public Genetic() {
+		parseGeneticCode();
+	}
+	
 	private void parseGeneticCode() {
 		//test genetic code
 		mainCode = getOr(testGunIsHot(), testGunIsHot(), getFire1());
@@ -68,6 +71,7 @@ public class Genetic extends AdvancedRobot {
 		onBulletMissedCode = getFire1();
 	}
 
+//Robot helper functions
 	private void handleDriving() {
 		//If the turning is finished, advance the state
 		Condition turned = new TurnCompleteCondition(this);
@@ -162,12 +166,351 @@ public class Genetic extends AdvancedRobot {
 	public void onBulletMissed(BulletMissedEvent e) {
 		onBulletMissedCode.run();
 	}
+	
+//Actions
+	private Runnable Fire1() {
+		return new Runnable() {
+		    public void run() {
+		    	fire(1);
+		    }
+		};
+	}
+
+	private Runnable Fire2() {
+		return new Runnable() {
+		    public void run() {
+		    	fire(2);
+		    }
+		};
+	}
+	
+	private Runnable Fire3() {
+		return new Runnable() {
+		    public void run() {
+		    	fire(3);
+		    }
+		};
+	}
+	
+	private Runnable TurnGunToEnemy() {
+		return new Runnable() {
+		    public void run() {
+		    	//TODO
+		    }
+		};
+	}
+	
+	private Runnable TurnGunRight5() {
+		return new Runnable() {
+		    public void run() {
+		    	//TODO
+		    }
+		};
+	}
+	
+	private Runnable TurnGunRight10() {
+		return new Runnable() {
+		    public void run() {
+		    	//TODO
+		    }
+		};
+	}
+	
+	private Runnable TurnGunLeft5() {
+		return new Runnable() {
+		    public void run() {
+		    	//TODO
+		    }
+		};
+	}
+	
+	private Runnable TurnGunLeft10() {
+		return new Runnable() {
+		    public void run() {
+		    	//TODO
+		    }
+		};
+	}
 
 //Tests
 	/**
 	* The genome implementation functions
-	*/
-	private Callable<Boolean> testGunIsHot(){
+	*/	
+	private Callable<Boolean> TestEnemyEnergy0() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyEnergy == 0 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}	
+
+	private Callable<Boolean> TestEnemyEnergyBelow10() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyEnergy < 10 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+		
+	}
+
+	private Callable<Boolean> TestEnergyBelow10() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( getEnergy() < 10 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+
+	private Callable<Boolean> TestEnergyGreaterThanEnemys() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( getEnergy() > enemyEnergy ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+
+	private Callable<Boolean> TestEnergyLessThanEnemys() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( getEnergy() < enemyEnergy ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestEnemyWithin5Ticks() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / getVelocity() < 5 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+
+	private Callable<Boolean> TestEnemyWithin10Ticks() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / getVelocity() < 10 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}	
+	
+	private Callable<Boolean> TestEnemyWithin20Ticks() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / getVelocity() < 20 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}	
+
+	private Callable<Boolean> TestEnemyWithin50Ticks() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / getVelocity() < 50 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestEnemyWithin5TicksFire1() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / BulletVelocityForPower[1] < 5 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestEnemyWithin5TicksFire2() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / BulletVelocityForPower[2] < 5 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestEnemyWithin5TicksFire3() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / BulletVelocityForPower[3] < 5 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestEnemyWithin10TicksFire1() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / BulletVelocityForPower[1] < 10 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestEnemyWithin10TicksFire2() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / BulletVelocityForPower[2] < 10 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestEnemyWithin10TicksFire3() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / BulletVelocityForPower[3] < 10 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestEnemyWithin20TicksFire1() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / BulletVelocityForPower[1] < 20 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestEnemyWithin20TicksFire2() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / BulletVelocityForPower[2] < 20 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestEnemyWithin20TicksFire3() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / BulletVelocityForPower[3] < 20 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestEnemyWithin50TicksFire1() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / BulletVelocityForPower[1] < 50 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestEnemyWithin50TicksFire2() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / BulletVelocityForPower[2] < 50 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestEnemyWithin50TicksFire3() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+					if ( enemyDistance / BulletVelocityForPower[3] < 50 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
+		    }
+		};
+	}
+	
+	private Callable<Boolean> TestGunIsHot(){
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
 					if ( getGunHeat() > 0 ) {
@@ -179,85 +522,33 @@ public class Genetic extends AdvancedRobot {
 		    }
 		};
 	}
-
-	private boolean TestEnemyEnergy() {
-		//TODO
-		return true;
-	}
-
-	private boolean TestEnemyEnergy0() {
-		return enemyEnergy == 0;
-	}	
-
-	private boolean TestEnemyEnergyBelow10() {
-		return enemyEnergy < 10;
-	}
-
-	private boolean TestEnergyBelow10() {
-		return getEnergy() < 10;
-	}
-
-	private boolean TestEnergyGreaterThanEnemys() {
-		return getEnergy() > enemyEnergy;
-	}
-
-	private boolean TestEnergyLessThanEnemys() {
-		return getEnergy() < enemyEnergy;
-	}
-
-	private boolean TestEnemyWithin10Ticks() {
-		return enemyDistance / getVelocity() < 10;
-	}	
-	private boolean TestEnemyWithin20Ticks() {
-		return enemyDistance / getVelocity() < 20;
-	}	
-
-	private boolean TestEnemyWithin50Ticks() {
-		return enemyDistance / getVelocity() < 50;
+	
+	private Callable<Boolean> TestGunWithin5Ticks() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+		    	//TODO
+		    }
+		};
 	}
 	
-	private boolean TestGunWithin5Ticks() {
-		//TODO
-		return true;
-	}
-	
-	private boolean TestTurnToEnemyWithin10Ticks() {
-		// I assume we use the max turning speed for gun
-		return enemyBearing/20 < 10;
+	private Callable<Boolean> TestTurnToEnemyWithin10Ticks() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+		    	//TODO
+		    }
+		};
 	}	
 
-	private boolean TestTurnToEnemyWithin5TIcks() {
-		// I assume we use the max turning speed for gun
-		return enemyBearing/20 < 5;
+	private Callable<Boolean> TestTurnToEnemyWithin5TIcks() {
+		return new Callable<Boolean>() {
+		    public Boolean call() throws Exception {
+		    	//TODO
+		    }
+		};
 	}	
-
-//Actions
-	private Runnable getFire1() {
-		return new Runnable() {
-		    public void run() {
-		    	fire(1);
-		    }
-		};
-	}
-
-	private Runnable getFire2() {
-		return new Runnable() {
-		    public void run() {
-		    	fire(2);
-		    }
-		};
-	}
-
-	private Runnable getFire3() {
-		return new Runnable() {
-		    public void run() {
-		    	fire(3);
-		    }
-		};
-	}
 	
 //Logic Functions
-	private Runnable getOr(final Callable<Boolean> test1, final Callable<Boolean> test2, final Runnable action) {
+	private Runnable Or(final Callable<Boolean> test1, final Callable<Boolean> test2, final Runnable action) {
 		return new Runnable() {
 		    public  void run() {
 				try{
@@ -269,7 +560,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Runnable getAnd(final Callable<Boolean> test1, final Callable<Boolean> test2, final Runnable action) {
+	private Runnable And(final Callable<Boolean> test1, final Callable<Boolean> test2, final Runnable action) {
 		return new Runnable() {
 		    public  void run() {
 				try{
@@ -281,7 +572,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Runnable getNot(final Callable<Boolean> test, final Runnable action) {
+	private Runnable Not(final Callable<Boolean> test, final Runnable action) {
 		return new Runnable() {
 		    public  void run() {
 				try{
@@ -293,7 +584,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Runnable getIfThen(final Callable<Boolean> test, final Runnable action) {
+	private Runnable If_Then(final Callable<Boolean> test, final Runnable action) {
 		return new Runnable() {
 		    public  void run() {
 				try{
@@ -304,4 +595,5 @@ public class Genetic extends AdvancedRobot {
 		    }
 		};
 	}
+	
 }
