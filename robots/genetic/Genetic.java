@@ -166,15 +166,15 @@ public class Genetic extends AdvancedRobot {
 	/**
 	* The genome implementation functions
 	*/
-	private Callable<Boolean> testGunIsHot() {
+	private Callable<Boolean> testGunIsHot(){
 		return new Callable<Boolean>() {
-		    public Boolean call() {
-		    	if ( getGunHeat() > 0 ) {
-					return Boolean.TRUE;
-				}
-				else {
-					return Boolean.FALSE;
-				}
+		    public Boolean call() throws Exception {
+					if ( getGunHeat() > 0 ) {
+						return Boolean.TRUE;
+					}
+					else {
+						return Boolean.FALSE;
+					}
 		    }
 		};
 	}
@@ -239,13 +239,14 @@ public class Genetic extends AdvancedRobot {
 	}	
 
 
-	private Runnable getOr(Callable<Boolean> test1, Callable<Boolean> test2, Runnable action) {
+	private Runnable getOr(final Callable<Boolean> test1, final Callable<Boolean> test2, final Runnable action) {
 		return new Runnable() {
-		    public void run() {
-			//	boolean test1bool = test1.test(Boolean.TRUE);
-			//	boolean test2bool = test2.test(Boolean.TRUE);
+		    public  void run() {
+				try{
 				if(test1.call() || test2.call())
 					action.run();
+				}
+				catch (Exception e){}
 		    }
 		};
 	}
@@ -273,6 +274,4 @@ public class Genetic extends AdvancedRobot {
 		    }
 		};
 	}
-
-	
 }
