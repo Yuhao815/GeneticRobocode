@@ -36,7 +36,7 @@ public class Genetic extends AdvancedRobot {
 	double enemyBearing;
 	//Bullet velocity = 20 - (3 * firepower)
 	//0 to fix indexing
-	Array<int> BulletVelocityForPower = {0, 17, 14, 11};
+	int[] BulletVelocityForPower = {0, 17, 14, 11};
 
 	/**
 	 * run: Crazy's main run function
@@ -64,11 +64,11 @@ public class Genetic extends AdvancedRobot {
 	
 	private void parseGeneticCode() {
 		//test genetic code
-		mainCode = getOr(testGunIsHot(), testGunIsHot(), getFire1());
-		onScannedRobotCode = getFire1();
-		onHitRobotCode = getFire1();
-		onBulletHitCode = getFire1();
-		onBulletMissedCode = getFire1();
+		mainCode = Or(TestGunIsHot(), TestGunIsHot(), Fire1());
+		onScannedRobotCode = Fire1();
+		onHitRobotCode = Fire1();
+		onBulletHitCode = Fire1();
+		onBulletMissedCode = Fire1();
 	}
 
 //Robot helper functions
@@ -195,7 +195,7 @@ public class Genetic extends AdvancedRobot {
 	private Runnable TurnGunToEnemy() {
 		return new Runnable() {
 		    public void run() {
-		    	//TODO
+		    	turnGunRight( enemyBearing );
 		    }
 		};
 	}
@@ -203,7 +203,7 @@ public class Genetic extends AdvancedRobot {
 	private Runnable TurnGunRight5() {
 		return new Runnable() {
 		    public void run() {
-		    	//TODO
+		    	turnGunRight(5.0);
 		    }
 		};
 	}
@@ -211,7 +211,7 @@ public class Genetic extends AdvancedRobot {
 	private Runnable TurnGunRight10() {
 		return new Runnable() {
 		    public void run() {
-		    	//TODO
+		    	turnGunRight(10.0);
 		    }
 		};
 	}
@@ -219,7 +219,7 @@ public class Genetic extends AdvancedRobot {
 	private Runnable TurnGunLeft5() {
 		return new Runnable() {
 		    public void run() {
-		    	//TODO
+		    	turnGunLeft(5.0);
 		    }
 		};
 	}
@@ -227,7 +227,7 @@ public class Genetic extends AdvancedRobot {
 	private Runnable TurnGunLeft10() {
 		return new Runnable() {
 		    public void run() {
-		    	//TODO
+		    	turnGunLeft(10.0);
 		    }
 		};
 	}
@@ -354,7 +354,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Callable<Boolean> TestEnemyWithin5TicksFire1() {
+	private Callable<Boolean> TestEnemyWithin5TicksOfFire1() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
 					if ( enemyDistance / BulletVelocityForPower[1] < 5 ) {
@@ -367,7 +367,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Callable<Boolean> TestEnemyWithin5TicksFire2() {
+	private Callable<Boolean> TestEnemyWithin5TicksOfFire2() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
 					if ( enemyDistance / BulletVelocityForPower[2] < 5 ) {
@@ -380,7 +380,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Callable<Boolean> TestEnemyWithin5TicksFire3() {
+	private Callable<Boolean> TestEnemyWithin5TicksOfFire3() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
 					if ( enemyDistance / BulletVelocityForPower[3] < 5 ) {
@@ -393,7 +393,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Callable<Boolean> TestEnemyWithin10TicksFire1() {
+	private Callable<Boolean> TestEnemyWithin10TicksOfFire1() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
 					if ( enemyDistance / BulletVelocityForPower[1] < 10 ) {
@@ -406,7 +406,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Callable<Boolean> TestEnemyWithin10TicksFire2() {
+	private Callable<Boolean> TestEnemyWithin10TicksOfFire2() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
 					if ( enemyDistance / BulletVelocityForPower[2] < 10 ) {
@@ -419,7 +419,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Callable<Boolean> TestEnemyWithin10TicksFire3() {
+	private Callable<Boolean> TestEnemyWithin10TicksOfFire3() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
 					if ( enemyDistance / BulletVelocityForPower[3] < 10 ) {
@@ -432,7 +432,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Callable<Boolean> TestEnemyWithin20TicksFire1() {
+	private Callable<Boolean> TestEnemyWithin20TicksOfFire1() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
 					if ( enemyDistance / BulletVelocityForPower[1] < 20 ) {
@@ -445,7 +445,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Callable<Boolean> TestEnemyWithin20TicksFire2() {
+	private Callable<Boolean> TestEnemyWithin20TicksOfFire2() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
 					if ( enemyDistance / BulletVelocityForPower[2] < 20 ) {
@@ -458,7 +458,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Callable<Boolean> TestEnemyWithin20TicksFire3() {
+	private Callable<Boolean> TestEnemyWithin20TicksOfFire3() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
 					if ( enemyDistance / BulletVelocityForPower[3] < 20 ) {
@@ -471,7 +471,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Callable<Boolean> TestEnemyWithin50TicksFire1() {
+	private Callable<Boolean> TestEnemyWithin50TicksOfFire1() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
 					if ( enemyDistance / BulletVelocityForPower[1] < 50 ) {
@@ -484,7 +484,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Callable<Boolean> TestEnemyWithin50TicksFire2() {
+	private Callable<Boolean> TestEnemyWithin50TicksOfFire2() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
 					if ( enemyDistance / BulletVelocityForPower[2] < 50 ) {
@@ -497,7 +497,7 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
-	private Callable<Boolean> TestEnemyWithin50TicksFire3() {
+	private Callable<Boolean> TestEnemyWithin50TicksOfFire3() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
 					if ( enemyDistance / BulletVelocityForPower[3] < 50 ) {
@@ -526,7 +526,12 @@ public class Genetic extends AdvancedRobot {
 	private Callable<Boolean> TestGunWithin5Ticks() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
-		    	//TODO
+				if ( getGunHeat() <= .5 ) {
+					return Boolean.TRUE;
+				}
+				else {
+					return Boolean.FALSE;
+				}
 		    }
 		};
 	}
@@ -534,15 +539,25 @@ public class Genetic extends AdvancedRobot {
 	private Callable<Boolean> TestTurnToEnemyWithin10Ticks() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
-		    	//TODO
+				if ( enemyBearing <= 200 ) {
+					return Boolean.TRUE;
+				}
+				else {
+					return Boolean.FALSE;
+				}
 		    }
 		};
 	}	
 
-	private Callable<Boolean> TestTurnToEnemyWithin5TIcks() {
+	private Callable<Boolean> TestTurnToEnemyWithin5Ticks() {
 		return new Callable<Boolean>() {
 		    public Boolean call() throws Exception {
-		    	//TODO
+				if ( enemyBearing <= 100 ) {
+					return Boolean.TRUE;
+				}
+				else {
+					return Boolean.FALSE;
+				}
 		    }
 		};
 	}	
