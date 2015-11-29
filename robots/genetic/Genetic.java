@@ -163,6 +163,7 @@ public class Genetic extends AdvancedRobot {
 		onBulletMissedCode.run();
 	}
 
+//Tests
 	/**
 	* The genome implementation functions
 	*/
@@ -179,13 +180,10 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 
-
-	// Not sure what this means
 	private boolean TestEnemyEnergy() {
 		//TODO
 		return true;
 	}
-
 
 	private boolean TestEnemyEnergy0() {
 		return enemyEnergy == 0;
@@ -217,40 +215,23 @@ public class Genetic extends AdvancedRobot {
 	private boolean TestEnemyWithin50Ticks() {
 		return enemyDistance / getVelocity() < 50;
 	}
-
-
-	// Not sure what this means	
+	
 	private boolean TestGunWithin5Ticks() {
 		//TODO
 		return true;
 	}
-
-
-	// We can set our own turning rate right?
+	
 	private boolean TestTurnToEnemyWithin10Ticks() {
 		// I assume we use the max turning speed for gun
 		return enemyBearing/20 < 10;
 	}	
-
 
 	private boolean TestTurnToEnemyWithin5TIcks() {
 		// I assume we use the max turning speed for gun
 		return enemyBearing/20 < 5;
 	}	
 
-
-	private Runnable getOr(final Callable<Boolean> test1, final Callable<Boolean> test2, final Runnable action) {
-		return new Runnable() {
-		    public  void run() {
-				try{
-				if(test1.call() || test2.call())
-					action.run();
-				}
-				catch (Exception e){}
-		    }
-		};
-	}
-
+//Actions
 	private Runnable getFire1() {
 		return new Runnable() {
 		    public void run() {
@@ -271,6 +252,55 @@ public class Genetic extends AdvancedRobot {
 		return new Runnable() {
 		    public void run() {
 		    	fire(3);
+		    }
+		};
+	}
+	
+//Logic Functions
+	private Runnable getOr(final Callable<Boolean> test1, final Callable<Boolean> test2, final Runnable action) {
+		return new Runnable() {
+		    public  void run() {
+				try{
+				if(test1.call() || test2.call())
+					action.run();
+				}
+				catch (Exception e){}
+		    }
+		};
+	}
+	
+	private Runnable getAnd(final Callable<Boolean> test1, final Callable<Boolean> test2, final Runnable action) {
+		return new Runnable() {
+		    public  void run() {
+				try{
+				if(test1.call() && test2.call())
+					action.run();
+				}
+				catch (Exception e){}
+		    }
+		};
+	}
+	
+	private Runnable getNot(final Callable<Boolean> test, final Runnable action) {
+		return new Runnable() {
+		    public  void run() {
+				try{
+				if(!test.call())
+					action.run();
+				}
+				catch (Exception e){}
+		    }
+		};
+	}
+	
+	private Runnable getIfThen(final Callable<Boolean> test, final Runnable action) {
+		return new Runnable() {
+		    public  void run() {
+				try{
+				if(test.call())
+					action.run();
+				}
+				catch (Exception e){}
 		    }
 		};
 	}
