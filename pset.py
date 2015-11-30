@@ -87,24 +87,25 @@ def readScores(filename):
     with open(filename, 'r') as resultsFile:
         scores = resultsFile.readlines()[2:]
         for scoreLine in scores:
-            place, robotName, score = scoreLine.split(' ')[:3]
-            results[robotName] = score
+            place, robotName, score = scoreLine.split()[:3]
+            results[robotName] = float(score)
+    print(results)
     return results
 
 def evalRobot(individual):
     # Transform the tree expression in a callable function
     #func = toolbox.compile(expr=individual)
     writeGenome("genome.txt", individual)
-    print(individual)
-    print("_________________________")
+    #print(individual)
+    #print("_________________________")
     global counter
     counter += 1
-    robocodeCommand = "java -Xmx512M -DNOSECURITY=true -Dsun.io.useCanonCaches=false -cp C:/Users/sam/Desktop/Github/RoboCode/libs/robocode.jar robocode.Robocode -battle C:/Users/sam/Desktop/Github/GeneticRobocode/battles/MyBattle.battle -results results.txt"
+    robocodeCommand = "java -Xmx512M -DNOSECURITY=true -Dsun.io.useCanonCaches=false -cp C:/Users/sam/Desktop/Github/RoboCode/libs/robocode.jar robocode.Robocode -battle C:/Users/sam/Desktop/Github/GeneticRobocode/battles/MyBattle.battle -nodisplay -results results.txt"
     subprocess.call(robocodeCommand)
     scores = readScores("results.txt")
-    #result = scores["genetic.Genetic"]
+    result = scores["genetic.Genetic*"] - scores["sample.Tracker"]
     #print("______" + result)
-    result = 1.0 #call robocode
+    #result = 1.0 #call robocode
     return result,
 
 #genetic parameters
@@ -115,7 +116,7 @@ toolbox.register("expr_mut", gp.genFull, min_=5, max_=10) #the min and max depth
 toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=pset)
 
 #random.seed(10)
-pop = toolbox.population(n=100)
+pop = toolbox.population(n=10) #pop size orig 100
 hof = tools.HallOfFame(1)
 stats = tools.Statistics(lambda ind: ind.fitness.values)
 #stats.register("avg", numpy.mean)
@@ -123,5 +124,8 @@ stats = tools.Statistics(lambda ind: ind.fitness.values)
 #stats.register("min", numpy.min)
 #stats.register("max", numpy.max)
 
-algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 40, stats, halloffame=hof) #popsize of 40
+algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 5, stats, halloffame=hof) #num of gens of 40
 print(counter)
+#print the very best
+print(hof[0])
+writeGenome("finalGenome.txt", hof[0])

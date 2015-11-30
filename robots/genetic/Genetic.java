@@ -17,6 +17,8 @@ import java.util.function.Predicate;
 import java.util.concurrent.Callable;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.io.File;
 import java.util.Scanner;
 import java.util.regex.*;
@@ -31,6 +33,7 @@ import java.awt.*;
  * uses genetically programmed code for firing
  */
 public class Genetic extends AdvancedRobot {
+	Map testMap = new HashMap<String, Callable<Boolean>>();	
 	boolean movingForward;
 	private enum DriveState { INITIAL, LEFT_TURN, RIGHT_TURN }
 	DriveState drivingState;
@@ -51,6 +54,7 @@ public class Genetic extends AdvancedRobot {
 	 * run: Crazy's main run function
 	 */
 	public void run() {
+		initializeTestMap();
 		parseGeneticCode();
 		// Set colors
 		setBodyColor(new Color(0, 200, 0));
@@ -72,28 +76,36 @@ public class Genetic extends AdvancedRobot {
 		
 		List<String> commands = readGenome();
 		
-		mainCode = And(TestEnemyWithin50TicksOfFire3(), TestEnemyWithin50TicksOfFire1(), Not(TestEnergyLessThanEnemys(), Or(TestEnergyLessThanEnemys(), TestTurnToEnemyWithin5Ticks(), Fire3())));
-		onScannedRobotCode = Fire1();
-		onHitRobotCode = Fire1();
-		onBulletHitCode = Fire1();
-		onBulletMissedCode = Fire1();
+		// mainCode = And(TestEnemyWithin50TicksOfFire3(), TestEnemyWithin50TicksOfFire1(), Not(TestEnergyLessThanEnemys(), Or(TestEnergyLessThanEnemys(), TestTurnToEnemyWithin5Ticks(), Fire3())));
+		// onScannedRobotCode = Fire1();
+		// onHitRobotCode = Fire1();
+		// onBulletHitCode = Fire1();
+		// onBulletMissedCode = Fire1();
+
+		mainCode = parseCommand(commands.get(0));
+		onScannedRobotCode = parseCommand(commands.get(1));
+		onHitRobotCode = parseCommand(commands.get(2));
+		onBulletHitCode = parseCommand(commands.get(3));
+		onBulletMissedCode = parseCommand(commands.get(4));
 	}
 
 	private List<String> readGenome() {
 		File file = new File("genome.txt");
-		List<String> subtrees = new ArrayList<String>();
+		List<String> subtrees;
 		try{
 			Scanner genomeIn = new Scanner(file);
 
-			Pattern genomePattern = Pattern.compile("Root\\((.*),(.*),(.*),(.*),(.*)\\)"); //"\\w*Root\\w*\\(\\w*(.*),\\w*(.*)\\w*,\\w*(.*)\\w*,\\w*(.*)\\w*,\\w*(.*)\\w*\\)\\w*"
-			Matcher genomeMatcher = genomePattern.matcher(genomeIn.nextLine());
-			genomeMatcher.matches();
+			// Pattern genomePattern = Pattern.compile("Root\\((.*),(.*),(.*),(.*),(.*)\\)"); //"\\w*Root\\w*\\(\\w*(.*),\\w*(.*)\\w*,\\w*(.*)\\w*,\\w*(.*)\\w*,\\w*(.*)\\w*\\)\\w*"
+			// Matcher genomeMatcher = genomePattern.matcher(genomeIn.nextLine());
+			// genomeMatcher.matches();
 
-			subtrees.add(genomeMatcher.group(1));
-			subtrees.add(genomeMatcher.group(2));
-			subtrees.add(genomeMatcher.group(3));
-			subtrees.add(genomeMatcher.group(4));
-			subtrees.add(genomeMatcher.group(5));
+			subtrees = getParameters(genomeIn.nextLine());
+
+			// subtrees.add(genomeMatcher.group(1));
+			// subtrees.add(genomeMatcher.group(2));
+			// subtrees.add(genomeMatcher.group(3));
+			// subtrees.add(genomeMatcher.group(4));
+			// subtrees.add(genomeMatcher.group(5));
 
 			genomeIn.close();
 			
@@ -105,8 +117,8 @@ public class Genetic extends AdvancedRobot {
 			writer.flush();
 			writer.close();
 		}
-		catch(FileNotFoundException e){}
-		catch(UnsupportedEncodingException e){}
+		catch(FileNotFoundException e){ subtrees = new ArrayList<String>(); }
+		catch(UnsupportedEncodingException e){ subtrees = new ArrayList<String>(); }
 
 		return subtrees;
 	}
@@ -655,4 +667,109 @@ public class Genetic extends AdvancedRobot {
 		};
 	}
 	
+	private String getCommandName(String commandText) {
+		return commandText.split("\\(",  2)[0].trim();
+	}
+
+	private List<String> getParameters(String commandText) {
+		int parenDepth = 0;
+		StringBuilder param = new StringBuilder();
+		List<String> parameters = new ArrayList<String>();
+
+		for (int i = 0; i < commandText.length(); i++){
+    		char c = commandText.charAt(i);
+    		if(c == '(')
+    			parenDepth++;
+    		else if(c == ')')
+    			parenDepth--;
+
+    		if((c == ',' || c == ')') && parenDepth == 1 && param.length() > 0) {
+    			if(c == ')')
+    				param.append(c);
+    			parameters.add(param.toString());
+    			param.delete(0, param.length());
+    		} 
+
+    		if(parenDepth == 1 && (c == '(' || c == ')' || c == ',' ))
+    			continue;
+    		if(parenDepth > 0)
+    			param.append(c);
+		}
+
+		return parameters;
+	}
+
+	private Runnable parseCommand(String command) {
+		
+		String commandName = getCommandName(command);
+		List<String> parameters = getParameters(command);
+		
+		if (commandName.equals("Or"))
+			return Or(parseTest(parameters.get(0)), parseTest(parameters.get(1)), parseCommand(parameters.get(2)));
+		else if (commandName.equals("And"))
+			return And(parseTest(parameters.get(0)), parseTest(parameters.get(1)), parseCommand(parameters.get(2)));
+		else if (commandName.equals("Not"))
+			return Not(parseTest(parameters.get(0)), parseCommand(parameters.get(1)));
+		else if (commandName.equals("If_Then"))
+			return If_Then(parseTest(parameters.get(0)), parseCommand(parameters.get(1)));
+		else if (commandName.equals("Fire1"))
+			return Fire1();
+		else if (commandName.equals("Fire2"))
+			return Fire2();
+		else if (commandName.equals("Fire3"))
+			return Fire3();
+		else if (commandName.equals("TurnGunToEnemy"))
+			return TurnGunToEnemy();
+		else if (commandName.equals("TurnGunLeft5"))
+			return TurnGunLeft5();
+		else if (commandName.equals("TurnGunLeft10"))
+			return TurnGunLeft10();
+		else if (commandName.equals("TurnGunRight5"))
+			return TurnGunRight5();
+		else if (commandName.equals("TurnGunRight10"))
+			return TurnGunRight10();
+
+		// return new Runnable() {
+		//     public  void run() {}
+		// };
+		return Fire3(); //or throw parse exception?
+	}
+
+	private Callable<Boolean> parseTest(String command) {
+		String commandName = getCommandName(command);
+		if(testMap.containsKey(commandName)) {
+			return (Callable<Boolean>)testMap.get(commandName);
+		}
+
+		return TestGunIsHot(); //or throw exception?
+	}
+	
+	
+	private void initializeTestMap(){	
+		testMap.put("TestEnemyEnergy0", TestEnemyEnergy0());
+		testMap.put("TestEnemyEnergyBelow10", TestEnemyEnergyBelow10());
+		testMap.put("TestEnergyBelow10", TestEnergyBelow10());
+		testMap.put("TestEnergyGreaterThanEnemys", TestEnergyGreaterThanEnemys());
+		testMap.put("TestEnergyLessThanEnemys", TestEnergyLessThanEnemys());
+		testMap.put("TestEnemyWithin5Ticks", TestEnemyWithin5Ticks());
+		testMap.put("TestEnemyWithin10Ticks", TestEnemyWithin10Ticks());
+		testMap.put("TestEnemyWithin20Ticks", TestEnemyWithin20Ticks());
+		testMap.put("TestEnemyWithin50Ticks", TestEnemyWithin50Ticks());
+		testMap.put("TestEnemyWithin5TicksOfFire1", TestEnemyWithin5TicksOfFire1());
+		testMap.put("TestEnemyWithin5TicksOfFire2", TestEnemyWithin5TicksOfFire2());
+		testMap.put("TestEnemyWithin5TicksOfFire3", TestEnemyWithin5TicksOfFire3());
+		testMap.put("TestEnemyWithin10TicksOfFire1", TestEnemyWithin10TicksOfFire1());
+		testMap.put("TestEnemyWithin10TicksOfFire2", TestEnemyWithin10TicksOfFire2());
+		testMap.put("TestEnemyWithin10TicksOfFire3", TestEnemyWithin10TicksOfFire3());
+		testMap.put("TestEnemyWithin20TicksOfFire1", TestEnemyWithin20TicksOfFire1());
+		testMap.put("TestEnemyWithin20TicksOfFire2", TestEnemyWithin20TicksOfFire2());
+		testMap.put("TestEnemyWithin20TicksOfFire3", TestEnemyWithin20TicksOfFire3());
+		testMap.put("TestEnemyWithin50TicksOfFire1", TestEnemyWithin50TicksOfFire1());
+		testMap.put("TestEnemyWithin50TicksOfFire2", TestEnemyWithin50TicksOfFire2());
+		testMap.put("TestEnemyWithin50TicksOfFire3", TestEnemyWithin50TicksOfFire3());
+		testMap.put("TestGunIsHot", TestGunIsHot());
+		testMap.put("TestGunWithin5Ticks", TestGunWithin5Ticks());
+		testMap.put("TestTurnToEnemyWithin10Ticks", TestTurnToEnemyWithin10Ticks());
+		testMap.put("TestTurnToEnemyWithin5Ticks", TestTurnToEnemyWithin5Ticks());
+	}
 }
