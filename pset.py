@@ -66,6 +66,7 @@ pset.addTerminal(True, bool)
 pset.addTerminal(False, bool)
 pset.addTerminal(None, NoneType)
 
+counter = 0
 #begin genetic programming
 #initialize population
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
@@ -96,9 +97,11 @@ def evalRobot(individual):
     writeGenome("genome.txt", individual)
     print(individual)
     print("_________________________")
-    #robocodeCommand = "java -Xmx512M -DNOSECURITY=false -Dsun.io.useCanonCaches=false -cp C:/robocode/libs/robocode.jar robocode.Robocode -battle C:/robocode/battles/sample.battle -nodisplay -results results.txt"
-    #subprocess.call(robocodeCommand)
-    #scores = readScores("results.txt")
+    global counter
+    counter += 1
+    robocodeCommand = "java -Xmx512M -DNOSECURITY=true -Dsun.io.useCanonCaches=false -cp C:/Users/sam/Desktop/Github/RoboCode/libs/robocode.jar robocode.Robocode -battle C:/Users/sam/Desktop/Github/GeneticRobocode/battles/MyBattle.battle -results results.txt"
+    subprocess.call(robocodeCommand)
+    scores = readScores("results.txt")
     #result = scores["genetic.Genetic"]
     #print("______" + result)
     result = 1.0 #call robocode
@@ -121,3 +124,4 @@ stats = tools.Statistics(lambda ind: ind.fitness.values)
 #stats.register("max", numpy.max)
 
 algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 40, stats, halloffame=hof) #popsize of 40
+print(counter)

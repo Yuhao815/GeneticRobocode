@@ -15,6 +15,14 @@ package genetic;
 import robocode.*;
 import java.util.function.Predicate;
 import java.util.concurrent.Callable;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.File;
+import java.util.Scanner;
+import java.util.regex.*;
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 
 import java.awt.*;
 
@@ -42,6 +50,7 @@ public class Genetic extends AdvancedRobot {
 	 * run: Crazy's main run function
 	 */
 	public void run() {
+		parseGeneticCode();
 		// Set colors
 		setBodyColor(new Color(0, 200, 0));
 		setGunColor(new Color(0, 150, 50));
@@ -58,9 +67,6 @@ public class Genetic extends AdvancedRobot {
 		}
 	}
 
-	public Genetic() {
-		parseGeneticCode();
-	}
 	
 	private void parseGeneticCode() {
 		
@@ -77,25 +83,30 @@ public class Genetic extends AdvancedRobot {
 
 	private List<String> readGenome() {
 		File file = new File("genome.txt");
-		Scanner genomeIn = new Scanner(file);
-
-		Pattern genomePattern = new Pattern.compile("Root\\((.*),(.*),(.*),(.*),(.*)\\)"); //"\\w*Root\\w*\\(\\w*(.*),\\w*(.*)\\w*,\\w*(.*)\\w*,\\w*(.*)\\w*,\\w*(.*)\\w*\\)\\w*"
-		Matcher genomeMatcher = genomePattern.matcher(genomeIn.nextLine());
-
 		List<String> subtrees = new ArrayList<String>();
-		subtrees.add(genomeMatcher.group(1));
-		subtrees.add(genomeMatcher.group(2));
-		subtrees.add(genomeMatcher.group(3));
-		subtrees.add(genomeMatcher.group(4));
-		subtrees.add(genomeMatcher.group(5));
+		try{
+			Scanner genomeIn = new Scanner(file);
 
-		genomeIn.close();
+			Pattern genomePattern = Pattern.compile("Root\\((.*),(.*),(.*),(.*),(.*)\\)"); //"\\w*Root\\w*\\(\\w*(.*),\\w*(.*)\\w*,\\w*(.*)\\w*,\\w*(.*)\\w*,\\w*(.*)\\w*\\)\\w*"
+			Matcher genomeMatcher = genomePattern.matcher(genomeIn.nextLine());
 
-		PrintWriter writer = new PrintWriter("genome-parse.txt", "UTF-8");
-		for(String subtree : subtrees) {
-			writer.println(subtree);
+			subtrees.add(genomeMatcher.group(1));
+			subtrees.add(genomeMatcher.group(2));
+			subtrees.add(genomeMatcher.group(3));
+			subtrees.add(genomeMatcher.group(4));
+			subtrees.add(genomeMatcher.group(5));
+
+			genomeIn.close();
+			PrintWriter writer = new PrintWriter("C:\\Users\\sam\\Desktop\\Github\\GeneticRobocode\\genome-parse.txt", "UTF-8");
+			writer.println("Testing");
+			for(String subtree : subtrees) {
+				writer.println(subtree);
+			}
+			writer.flush();
+			writer.close();
 		}
-		writer.close();
+		catch(FileNotFoundException e){}
+		catch(UnsupportedEncodingException e){}
 
 		return subtrees;
 	}
