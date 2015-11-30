@@ -109,7 +109,7 @@ public class FinalGenetic extends AdvancedRobot {
 
 			genomeIn.close();
 			
-			PrintWriter writer = new PrintWriter("C:\\Users\\sam\\Desktop\\Github\\GeneticRobocode\\genome-parse.txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("genome-parse.txt", "UTF-8");
 			writer.println("Testing");
 			for(String subtree : subtrees) {
 				writer.println(subtree);
