@@ -59,20 +59,11 @@ public class Genetic extends AdvancedRobot {
 		setBulletColor(new Color(255, 255, 100));
 		setScanColor(new Color(255, 200, 200));
 
-		
-		//setInitialState();
-		// Loop forever
+		setInitialState();
 		while (isAlive) {
-			//handleDriving();
-			//mainCode.run();
-			setAhead(40000);
-			movingForward = true;
-			setTurnRight(90);
-			waitFor(new TurnCompleteCondition(this));
-			setTurnLeft(180);
-			waitFor(new TurnCompleteCondition(this));
-			setTurnRight(180);
-			waitFor(new TurnCompleteCondition(this));
+			handleDriving();
+			mainCode.run();
+			execute();
 		}
 	}
 
@@ -133,7 +124,7 @@ public class Genetic extends AdvancedRobot {
 					setRightTurnState();
 					break;
 				case RIGHT_TURN:
-					setInitialState();
+					setLeftTurnState();
 					break;
 			}
 		}
