@@ -63,12 +63,41 @@ public class Genetic extends AdvancedRobot {
 	}
 	
 	private void parseGeneticCode() {
-		//test genetic code
+		
+		List<String> commands = readGenome();
+
+
+
 		mainCode = Or(TestGunIsHot(), TestGunIsHot(), Fire1());
 		onScannedRobotCode = Fire1();
 		onHitRobotCode = Fire1();
 		onBulletHitCode = Fire1();
 		onBulletMissedCode = Fire1();
+	}
+
+	private List<String> readGenome() {
+		File file = new File("genome.txt");
+		Scanner genomeIn = new Scanner(file);
+
+		Pattern genomePattern = new Pattern.compile("Root\\((.*),(.*),(.*),(.*),(.*)\\)"); //"\\w*Root\\w*\\(\\w*(.*),\\w*(.*)\\w*,\\w*(.*)\\w*,\\w*(.*)\\w*,\\w*(.*)\\w*\\)\\w*"
+		Matcher genomeMatcher = genomePattern.matcher(genomeIn.nextLine());
+
+		List<String> subtrees = new ArrayList<String>();
+		subtrees.add(genomeMatcher.group(1));
+		subtrees.add(genomeMatcher.group(2));
+		subtrees.add(genomeMatcher.group(3));
+		subtrees.add(genomeMatcher.group(4));
+		subtrees.add(genomeMatcher.group(5));
+
+		genomeIn.close();
+
+		PrintWriter writer = new PrintWriter("genome-parse.txt", "UTF-8");
+		for(String subtree : subtrees) {
+			writer.println(subtree);
+		}
+		writer.close();
+
+		return subtrees;
 	}
 
 //Robot helper functions
