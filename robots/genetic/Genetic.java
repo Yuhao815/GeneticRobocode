@@ -42,6 +42,7 @@ public class Genetic extends AdvancedRobot {
 	double enemyEnergy;
 	double enemyDistance;
 	double enemyBearing;
+	boolean isAlive = true;
 	//Bullet velocity = 20 - (3 * firepower)
 	//0 to fix indexing
 	int[] BulletVelocityForPower = {0, 17, 14, 11};
@@ -59,11 +60,19 @@ public class Genetic extends AdvancedRobot {
 		setScanColor(new Color(255, 200, 200));
 
 		
-		setInitialState();
+		//setInitialState();
 		// Loop forever
-		while (true) {
-			handleDriving();
-			mainCode.run();
+		while (isAlive) {
+			//handleDriving();
+			//mainCode.run();
+			setAhead(40000);
+			movingForward = true;
+			setTurnRight(90);
+			waitFor(new TurnCompleteCondition(this));
+			setTurnLeft(180);
+			waitFor(new TurnCompleteCondition(this));
+			setTurnRight(180);
+			waitFor(new TurnCompleteCondition(this));
 		}
 	}
 
@@ -71,9 +80,7 @@ public class Genetic extends AdvancedRobot {
 	private void parseGeneticCode() {
 		
 		List<String> commands = readGenome();
-
-
-
+		
 		mainCode = Or(TestGunIsHot(), TestGunIsHot(), Fire1());
 		onScannedRobotCode = Fire1();
 		onHitRobotCode = Fire1();
@@ -89,6 +96,7 @@ public class Genetic extends AdvancedRobot {
 
 			Pattern genomePattern = Pattern.compile("Root\\((.*),(.*),(.*),(.*),(.*)\\)"); //"\\w*Root\\w*\\(\\w*(.*),\\w*(.*)\\w*,\\w*(.*)\\w*,\\w*(.*)\\w*,\\w*(.*)\\w*\\)\\w*"
 			Matcher genomeMatcher = genomePattern.matcher(genomeIn.nextLine());
+			genomeMatcher.matches();
 
 			subtrees.add(genomeMatcher.group(1));
 			subtrees.add(genomeMatcher.group(2));
@@ -97,6 +105,7 @@ public class Genetic extends AdvancedRobot {
 			subtrees.add(genomeMatcher.group(5));
 
 			genomeIn.close();
+			
 			PrintWriter writer = new PrintWriter("C:\\Users\\sam\\Desktop\\Github\\GeneticRobocode\\genome-parse.txt", "UTF-8");
 			writer.println("Testing");
 			for(String subtree : subtrees) {
@@ -151,6 +160,10 @@ public class Genetic extends AdvancedRobot {
 		drivingState = DriveState.RIGHT_TURN;
 	}
 
+	public void onRoundEnded(RoundEndedEvent e) {
+		isAlive = false;
+	}
+	
 	/**
 	 * onHitWall:  Handle collision with wall.
 	 */
