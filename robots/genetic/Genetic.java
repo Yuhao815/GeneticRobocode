@@ -72,7 +72,7 @@ public class Genetic extends AdvancedRobot {
 		
 		List<String> commands = readGenome();
 		
-		mainCode = Or(TestGunIsHot(), TestGunIsHot(), Fire1());
+		mainCode = And(TestEnemyWithin50TicksOfFire3(), TestEnemyWithin50TicksOfFire1(), Not(TestEnergyLessThanEnemys(), Or(TestEnergyLessThanEnemys(), TestTurnToEnemyWithin5Ticks(), Fire3())));
 		onScannedRobotCode = Fire1();
 		onHitRobotCode = Fire1();
 		onBulletHitCode = Fire1();

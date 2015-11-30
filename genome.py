@@ -67,7 +67,7 @@ def TestGunWithin5Ticks():
 	pass
 def TestTurnToEnemyWithin10Ticks():
 	pass
-def TestTurnToEnemyWithin5TIcks():
+def TestTurnToEnemyWithin5Ticks():
 	pass
 # Logic
 def Or(test1, test2, action): #returns bool

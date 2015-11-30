@@ -53,7 +53,7 @@ pset.addPrimitive(genome.TestEnemyWithin50TicksOfFire3, [], bool)
 pset.addPrimitive(genome.TestGunIsHot, [], bool)
 pset.addPrimitive(genome.TestGunWithin5Ticks, [], bool)
 pset.addPrimitive(genome.TestTurnToEnemyWithin10Ticks, [], bool)
-pset.addPrimitive(genome.TestTurnToEnemyWithin5TIcks, [], bool)
+pset.addPrimitive(genome.TestTurnToEnemyWithin5Ticks, [], bool)
 
 #logical
 pset.addPrimitive(genome.Or, [bool, bool, NoneType], NoneType)
