@@ -115,8 +115,11 @@ toolbox.register("mate", gp.cxOnePoint)
 toolbox.register("expr_mut", gp.genFull, min_=5, max_=10) #the min and max depth of new mutations?
 toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=pset)
 
+popSize = 50
+numGens = 20
+
 #random.seed(10)
-pop = toolbox.population(n=10) #pop size orig 100
+pop = toolbox.population(n=popSize)
 hof = tools.HallOfFame(1)
 stats = tools.Statistics(lambda ind: ind.fitness.values)
 #stats.register("avg", numpy.mean)
@@ -124,7 +127,7 @@ stats = tools.Statistics(lambda ind: ind.fitness.values)
 #stats.register("min", numpy.min)
 #stats.register("max", numpy.max)
 
-algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 5, stats, halloffame=hof) #num of gens of 40
+algorithms.eaSimple(pop, toolbox, 0.5, 0.2, numGens, stats, halloffame=hof)
 print(counter)
 #print the very best
 print(hof[0])
